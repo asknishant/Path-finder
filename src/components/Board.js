@@ -1,10 +1,78 @@
-import React from 'react'
-import { Button, Grid, GridItem } from '@chakra-ui/react'
+import { React, useState } from 'react'
+import {  Grid, GridItem, Text } from '@chakra-ui/react'
 import './Board.css'
+import StartButton from './StartButton'
 
-const cell = (key) => (<GridItem key={key} className='cell' textColor='red.300' colSpan={1} rowSpan={1} bg="palegreen" ></GridItem>)
+const textSelector = {
+  startPos: 'Choose starting cell',
+  endPos: 'Choose end cell',
+  startPlaying: 'start playing',
+  yayy: 'yayy found the shortest path!!!'
+}
+
+const clickSelector = ['start', 'end', 'setobstacles']
 
 export const Board = () => {
+  const [choose, setChoose] = useState(textSelector.startPos)
+  const [clickIdentify, setClickIdentify] = useState(clickSelector[0])
+  const [startCell, setStartCell] = useState(null)
+  const [endCell, setEndCell] = useState(null)
+  const [startCoordinate, setstartCoordinate] = useState({})
+  const [endCoordinate, setendCoordinate] = useState({})
+
+  const drawColumn = (r) => {
+    return Array.apply(null, { length: 50 }).map((e, c) => cell(c + r * 50 + 1, r, c))
+  }
+
+  const drawRow = () => {
+    return Array.apply(null, { length: 50 }).map((e, r) => drawColumn(r))
+  }
+
+  const cell = (key, r, c) => {
+    return (
+      <GridItem
+        onClick={(e) => {
+          gridClick(e, key, r, c)
+        }}
+        key={key}
+        className="cell"
+        colSpan={1}
+        rowSpan={1}
+        bg={getCellColor(key)}
+      ></GridItem>
+    )
+  }
+
+  const getCellColor = (key) => {
+    if(key === startCell) {
+      return 'black'
+    } else if(key === endCell) {
+      return 'blue'
+    } else {
+      return 'palegreen'
+    }
+  }
+  const gridClick = (e, key, r, c) => {
+    console.log('grid click at key ->', key)
+    // If the grid is clicked for the first time then set start cell as key and change click-identify as end.
+    if(clickIdentify === clickSelector[0]) {
+      setStartCell(key);
+      setChoose(textSelector.endPos);
+      setClickIdentify(clickSelector[1])
+      setstartCoordinate({r, c})
+      return;
+    } 
+
+    // if the grid is clicked for the second time then set end cell as key and change click-identify as find.
+    if(clickIdentify === clickSelector[1]) {
+      setEndCell(key);
+      setClickIdentify(clickSelector[2]);
+      setChoose(textSelector.startPlaying)
+      setendCoordinate(r, c)
+      return;
+    }
+  }
+
   return (
     <div className="scaffold">
       <Grid
@@ -13,17 +81,10 @@ export const Board = () => {
         templateColumns="repeat(50, 1fr)"
         gap={1}
       >
-      {drawColumn()}
+        {drawRow()}
       </Grid>
-      <Button className='btn-start'> start</Button>
+      <StartButton />
+      <Text noOfLines={[1, 2, 3]}>{choose}</Text>
     </div>
   )
-}
-
-const drawRow = (c) => {
-  return Array.apply(null, { length: 50 }).map((e, r) => cell(r + c*50 + 1))
-}
-
-const drawColumn = () => {
-    return Array.apply(null, { length: 50 }).map((e, c) => (drawRow(c)))
 }

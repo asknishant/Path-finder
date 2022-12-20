@@ -1,14 +1,9 @@
 .scaffold {
   width: 500px;
   height: 500px;
-  border: 5px solid;
+  border: 1px solid;
 }
 
 .cell {
     font-size: x-small;
-}
-
-.btn-start {
-    margin-top: 30px;
-    border-radius: 10%;
 }
