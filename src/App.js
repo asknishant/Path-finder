@@ -1,9 +1,9 @@
 import React from 'react'
-import { Board } from './components/Board';
+import PathfindingVisualizer from './components/PathfindingVisualizer';
 
 const App = () => {
   return (
-    <Board />
+    <PathfindingVisualizer />
   )
 }
 
